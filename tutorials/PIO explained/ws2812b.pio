@@ -1,0 +1,36 @@
+.program ws2812b
+.side_set 1 opt
+
+.wrap_target
+    pull block                  ; pull the next data (RGB value for a LED)
+    out null, 8                 ; ignore the trailing 8 bits
+
+next_bit:
+    out x, 1                    ; copy 1 bit (the MSB) of data to X
+    jmp !x bit_0 side 1         ; jump if the bit is "0" (set the GPIO to "1")
+    jmp bit_end                 ; unconditional jump (GPIO is still "1")
+
+bit_0:
+    nop side 0                  ; set the GPIO to "0"
+
+bit_end:
+    jmp !osre next_bit side 0   ; jump if the shift register contains more bits (GPIO is "0")
+                                ; shift register empty -> no more data to send for a LED
+.wrap
+
+
+% c-sdk {
+
+void ws2812b_program_init(PIO pio, uint sm, uint offset, uint pin)
+{
+    pio_sm_config cfg = ws2812b_program_get_default_config(offset);
+    sm_config_set_out_shift(&cfg, false, false, 32);
+    sm_config_set_clkdiv(&cfg, (clock_get_hz(clk_sys) / 1e6f) * 1.25f / 3.0f);    // 1.25us / 3
+    sm_config_set_sideset_pins(&cfg, pin);
+
+    pio_gpio_init(pio, pin);
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);
+
+    pio_sm_init(pio, sm, offset, &cfg);
+}
+%}
