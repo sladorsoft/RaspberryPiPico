@@ -5,21 +5,38 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Cortex Debug",
+      "name": "Debug",
       "cwd": "${workspaceRoot}",
       "executable": "${command:cmake.launchTargetPath}",
       "request": "launch",
       "type": "cortex-debug",
       "servertype": "openocd",
-      "gdbPath": "gdb-multiarch",
       "device": "RP2040",
       "configFiles": [
-        "interface/raspberrypi-swd.cfg",
+        "interface/cmsis-dap.cfg",
         "target/rp2040.cfg"
         ],
       "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
       "runToEntryPoint": "main",
-      // Give restart the same functionality as runToEntryPoint - main
+      "postRestartCommands": [
+          "break main",
+          "continue"
+      ]
+    },
+    {
+      "name": "Attach",
+      "cwd": "${workspaceRoot}",
+      "executable": "${command:cmake.launchTargetPath}",
+      "request": "attach",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "RP2040",
+      "configFiles": [
+        "interface/cmsis-dap.cfg",
+        "target/rp2040.cfg"
+        ],
+      "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
+      "runToEntryPoint": "main",
       "postRestartCommands": [
           "break main",
           "continue"

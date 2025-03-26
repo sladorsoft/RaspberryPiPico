@@ -1,15 +1,7 @@
 {
     "configurations": [
         {
-            "name": "RPi Pico",
-            "cppStandard": "c++17",
-            "cStandard": "c11",
-            "intelliSenseMode": "gcc-arm",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "${env:PICO_SDK_PATH}/src/**"
-            ],
-            "defines": [],
+            "name": "Default",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

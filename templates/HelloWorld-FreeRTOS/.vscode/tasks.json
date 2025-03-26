@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash via DAP",
+            "type": "shell",
+            "group": "build",
+            "command": "openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000' -c 'program \"build/${command:cmake.launchTargetFilename}\" verify reset exit'",
+        },
+        {
+            "label": "Reset via DAP",
+            "type": "shell",
+            "group": "build",
+            "command": "openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000' -c 'init; reset run; exit;'"
+        }
+    ]
+}
